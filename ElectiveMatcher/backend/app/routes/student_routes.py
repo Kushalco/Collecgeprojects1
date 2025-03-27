@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, jsonify
 from config import UPLOAD_FOLDER
-from file_services import get_student_subjects
+from app.services.file_service import get_student_subjects
 
 student_bp = Blueprint("student", __name__)
 

@@ -1,6 +1,16 @@
-from app import create_app
+from flask import Flask
+from admin_routes import admin_bp
+import os
 
-app = create_app()
+app = Flask(__name__)
+
+# Set Upload Folder
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+# Register Blueprints
+app.register_blueprint(admin_bp)
 
 if __name__ == "__main__":
     app.run(debug=True)
