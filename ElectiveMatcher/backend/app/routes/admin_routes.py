@@ -51,8 +51,10 @@ def get_mismatches():
     file1_path = os.path.join(UPLOAD_FOLDER, file1)
     file2_path = os.path.join(UPLOAD_FOLDER, file2)
 
+    # Ensure files are uploaded first
     if not os.path.exists(file1_path) or not os.path.exists(file2_path):
         return jsonify({"error": "Files not found. Please upload first!"}), 400
 
     mismatches = process_and_compare(file1_path, file2_path)
+    
     return jsonify({"mismatches": mismatches}), 200

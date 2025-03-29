@@ -1,5 +1,5 @@
 from flask import Flask
-from admin_routes import admin_bp
+from app.routes.admin_routes import admin_bp
 import os
 
 app = Flask(__name__)
