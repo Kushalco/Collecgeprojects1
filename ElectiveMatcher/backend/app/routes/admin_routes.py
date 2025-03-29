@@ -12,7 +12,6 @@ ALLOWED_EXTENSIONS = {"xlsx"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# 📌 **1️⃣ Admin Upload API**
 @admin_bp.route("/admin/upload", methods=["POST"])
 def upload_files():
     if "file1" not in request.files or "file2" not in request.files:
@@ -30,6 +29,9 @@ def upload_files():
 
         filepath1 = os.path.join(UPLOAD_FOLDER, filename1)
         filepath2 = os.path.join(UPLOAD_FOLDER, filename2)
+
+        print(f"Saving file1 at: {filepath1}")  # Debugging log
+        print(f"Saving file2 at: {filepath2}")  # Debugging log
 
         file1.save(filepath1)
         file2.save(filepath2)
@@ -50,6 +52,9 @@ def get_mismatches():
 
     file1_path = os.path.join(UPLOAD_FOLDER, file1)
     file2_path = os.path.join(UPLOAD_FOLDER, file2)
+
+    print(f"checking file1: {file1_path}")
+    print(f"checking file2: {file2_path}")
 
     # Ensure files are uploaded first
     if not os.path.exists(file1_path) or not os.path.exists(file2_path):
