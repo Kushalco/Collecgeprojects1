@@ -91,13 +91,10 @@
     }
 
     .table-custom thead th {
-      position: sticky;
-      top: 0px;
       background-color: var(--header-bg) !important;
       color: var(--header-text) !important;
-      z-index: 10;
       text-transform: uppercase;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 2rem;
     }
 
     .table-custom tbody td, .table-custom th {
@@ -229,6 +226,34 @@
         }
       });
     });
+
+    // JavaScript solution to fix the table header
+    const table = document.querySelector('.table-responsive table');
+    const thead = table.querySelector('thead');
+    const originalOffset = table.getBoundingClientRect().top + window.scrollY;
+
+    function fixHeader() {
+      const scrollTop = window.scrollY;
+      const tableTop = table.getBoundingClientRect().top + scrollTop;
+      const navbarHeight = 70; // Height of the fixed navbar
+
+      if (scrollTop > originalOffset - navbarHeight) {
+        thead.style.position = 'fixed';
+        thead.style.top = `${navbarHeight}px`; // Position below navbar
+        thead.style.width = `${table.offsetWidth}px`; // Match table width
+        thead.style.zIndex = '1'; // Ensure it stays above tbody
+      } else {
+        thead.style.position = '';
+        thead.style.top = '';
+        thead.style.width = '';
+        thead.style.zIndex = '';
+      }
+    }
+
+    // Add event listener for scroll
+    window.addEventListener('scroll', fixHeader);
+    // Initial call to set the header position
+    fixHeader();
   </script>
 </body>
 </html>

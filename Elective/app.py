@@ -14,6 +14,12 @@ SUBJECTS = {
     "OEC-IT801D": "Bio Informatics",
     "OEC-IT802A": "E-Commerce & ERP",
     "OEC-IT802C": "Economic Policies in India",
+    "PEC-IT601B": "Distributed Systems",
+    "PEC-IT601D": "Image Processing",
+    "PEC-IT602B": "Data Warehousing & Data Mining",
+    "PEC-IT602D": "Pattern Recognition",
+    "OEC-IT601B": "HRD & Organizational Behaviour",
+    "OEC-IT601A": "Numerical Methods",
 }
 
 CATEGORY_MAP = {
@@ -22,6 +28,12 @@ CATEGORY_MAP = {
     "OEC-IT801D": "Open Elective III",
     "OEC-IT802A": "Open Elective IV",
     "OEC-IT802C": "Open Elective IV",
+    "PEC-IT601B": "Professional Elective VI",
+    "PEC-IT601D": "Professional Elective VI",
+    "PEC-IT602B": "Professional Elective VII",
+    "PEC-IT602D": "Professional Elective VII",
+    "OEC-IT601B": "Open Elective III",
+    "OEC-IT601A": "Open Elective III",
 }
 
 # === Helper Functions ===
@@ -71,6 +83,18 @@ def process_and_compare(enroll_file, alloc_file):
         for roll_no in df_enroll.index:
             subjects_str = df_enroll.loc[roll_no, "Subjects"]
             chosen_electives = extract_electives(subjects_str, SUBJECTS)
+
+            # If no chosen electives from enrollment, use allocation data as fallback
+            if not chosen_electives and roll_no in df_alloc.index:
+                chosen_electives = []
+                row = df_alloc.loc[roll_no]
+                for category in elective_categories:
+                    chosen_code = next((normalize_code(row[category, subcol]) 
+                                      for subcol in df_alloc[category].columns 
+                                      if pd.notna(row[category, subcol]) and normalize_code(row[category, subcol]) in SUBJECTS), None)
+                    if chosen_code:
+                        chosen_electives.append(chosen_code)
+
             all_chosen_bullets = "\n" + "\n".join([f"- {SUBJECTS[code]} ({code})" for code in chosen_electives]) if chosen_electives else ""
 
             # Map chosen electives to their categories
@@ -92,6 +116,10 @@ def process_and_compare(enroll_file, alloc_file):
             for i, category in enumerate(elective_categories):
                 chosen_code = chosen_by_category.get(category)
                 allocated_code = allocated.get(category)
+
+                # Use allocation data as chosen if no enrollment choice exists
+                if not chosen_code and allocated_code:
+                    chosen_code = allocated_code
 
                 if not chosen_code and not allocated_code:
                     status = "Not Chosen/Not Allocated"
