@@ -1,5 +1,0 @@
-#Dependencies
-flask
-pandas
-werkzeug
-openpyxl
